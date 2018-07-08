@@ -59,6 +59,7 @@ test-meson-fedora27:
     # contains this stuff instead, and use that.
     - dnf install -y 'dnf-command(builddep)' dbus-devel dbus-x11 libseccomp-devel meson redhat-rpm-config
     - dnf builddep -y tracker tracker-miners
+    - dnf install -y libasan libubsan
 
     - useradd -Um tracker
     - chown -R tracker:tracker .
@@ -75,6 +76,6 @@ test-meson-fedora27:
     - dnf install -y git
     - su tracker -c 'mkdir subprojects; cd subprojects; git clone https://gitlab.gnome.org/GNOME/tracker'
     - su tracker -c 'mkdir build'
-    - su tracker -c 'cd build; meson .. --prefix=/usr -Dfunctional_tests=false'
+    - su tracker -c 'cd build; meson .. --prefix=/usr -Dfunctional_tests=false -Db_sanitize=address,undefined'
     - su tracker -c 'cd build; ninja'
     - su tracker -c 'cd build; meson test --suite tracker-miners --print-errorlogs'
